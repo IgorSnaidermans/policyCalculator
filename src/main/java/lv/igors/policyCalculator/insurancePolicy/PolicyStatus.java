@@ -1,4 +1,4 @@
 package lv.igors.policyCalculator.insurancePolicy;
 
-public class InsuranceObjectsList {
+public enum PolicyStatus {
 }
