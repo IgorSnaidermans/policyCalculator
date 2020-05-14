@@ -2,13 +2,14 @@ package lv.igors.policyCalculator.coefficientMapper;
 
 import java.math.BigDecimal;
 
-public enum RiskCoefficientConstants {
-    FIRE_COST_MORE_THAN_BOUND(new BigDecimal("0.014")),
-    FIRE_COST_LESS_THAN_BOUND(new BigDecimal("0.024"));
+public enum InsuredCostBoundaryConstants {
+    FIRE(new BigDecimal("100")),
+    THEFT(new BigDecimal("15"));
+
 
     private BigDecimal value;
 
-    RiskCoefficientConstants(BigDecimal value) {
+    InsuredCostBoundaryConstants(BigDecimal value) {
         this.value = value;
     }
 

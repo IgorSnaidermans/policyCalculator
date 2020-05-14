@@ -7,13 +7,15 @@ import java.math.BigDecimal;
 
 @Component
 public class FireCoefficientMapper implements CoefficientMapperStrategy {
-    BigDecimal HUNDRED = new BigDecimal("100");
 
+    @Override
     public BigDecimal map(Risks risk, BigDecimal insuredCost) {
-        if (risk.equals(Risks.FIRE) && insuredCost.compareTo(HUNDRED) < 0) {
-            return RiskCoefficientConstants.FIRE_COST_MORE_THAN_100.getValue();
-        } else if (risk.equals(Risks.FIRE) && insuredCost.compareTo(HUNDRED) > 0) {
-            return RiskCoefficientConstants.FIRE_COST_LESS_THAN_100.getValue();
+        if (risk.equals(Risks.FIRE) &&
+                insuredCost.compareTo(InsuredCostBoundaryConstants.FIRE.getValue()) < 0) {
+            return RiskCoefficientConstants.FIRE_COST_MORE_THAN_BOUND.getValue();
+        } else if (risk.equals(Risks.FIRE) &&
+                insuredCost.compareTo(InsuredCostBoundaryConstants.FIRE.getValue()) > 0) {
+            return RiskCoefficientConstants.FIRE_COST_LESS_THAN_BOUND.getValue();
         }
 
         return null;
