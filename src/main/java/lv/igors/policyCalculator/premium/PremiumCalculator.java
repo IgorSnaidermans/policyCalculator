@@ -3,7 +3,6 @@ package lv.igors.policyCalculator.premium;
 import lv.igors.policyCalculator.coefficientMapper.CoefficientMapperStrategy;
 import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
 import lv.igors.policyCalculator.coefficientMapper.TheftCoefficientMapper;
-import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import lv.igors.policyCalculator.insurancePolicy.Risks;
@@ -20,46 +19,55 @@ public class PremiumCalculator {
     CoefficientMapperStrategy coefficientMapper;
 
     public BigDecimal calculate(InsurancePolicy policy) {
-        List<InsuranceObject> insuranceSubObjectList =
-                policy.getInsuranceObjectList();
+        List<InsuranceSubObject> insuranceSubObjectList =
+                policy.getAllSubObjects();
         BigDecimal finalPremium = new BigDecimal("0");
 
-        finalPremium = appendEveryRiskPremium(insuranceSubObjectList, finalPremium);
-        return roundThreePrecision(finalPremium);
+        finalPremium = appendAllRiskPremium(insuranceSubObjectList, finalPremium);
+        return scaleToTwoValues(finalPremium);
     }
 
-    private BigDecimal appendEveryRiskPremium(List<InsuranceObject> insuranceSubObjectList, BigDecimal finalPremium) {
-        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = calculateRiskInsuredCost(insuranceSubObjectList);
+    private BigDecimal appendAllRiskPremium(List<InsuranceSubObject> insuranceSubObjectList, BigDecimal finalPremium) {
+        HashMap<Risks, BigDecimal> allRiskInsuredCost = sumAllRiskInsuredCost(insuranceSubObjectList);
 
-        for (Map.Entry<Risks, BigDecimal> riskCost : singleInsuredRiskCosts.entrySet()) {
+        finalPremium = appendCalculatedPremium(finalPremium, allRiskInsuredCost);
+
+        return finalPremium;
+    }
+
+    private HashMap<Risks, BigDecimal> sumAllRiskInsuredCost(List<InsuranceSubObject> insuranceSubObjectList) {
+        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = new HashMap<>();
+
+        insuranceSubObjectList
+                .forEach(subObject -> subObject.getInsuredRisks()
+                        .forEach(risk -> {
+                            appendRiskCost(singleInsuredRiskCosts, subObject.getInsuredCost(), risk);
+                        })
+                );
+
+        return singleInsuredRiskCosts;
+    }
+
+    private void appendRiskCost(HashMap<Risks, BigDecimal> singleInsuredRiskCosts,
+                                BigDecimal subObjectCost, Risks risk) {
+        if (null == singleInsuredRiskCosts.get(risk)) {
+            singleInsuredRiskCosts.put(risk, subObjectCost);
+        } else {
+            BigDecimal insuredCost = singleInsuredRiskCosts.get(risk);
+            insuredCost = insuredCost.add(subObjectCost);
+
+            singleInsuredRiskCosts.replace(risk, insuredCost);
+        }
+    }
+
+    private BigDecimal appendCalculatedPremium(BigDecimal finalPremium, HashMap<Risks, BigDecimal> allRiskInsuredCost) {
+        for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
             coefficientMapperStrategyPicker(riskCost.getKey());
             BigDecimal coefficient = coefficientMapper.map(riskCost.getValue());
             BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
             finalPremium = finalPremium.add(riskPremium);
         }
-
         return finalPremium;
-    }
-
-    private HashMap<Risks, BigDecimal> calculateRiskInsuredCost(List<InsuranceObject> insuranceSubObjectList) {
-        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = new HashMap<>();
-
-        for (InsuranceObject insuranceObject : insuranceSubObjectList) {
-            for (InsuranceSubObject insuranceSubObject : insuranceObject.getInsuranceSubObjectList()) {
-                for (Risks risk : insuranceSubObject.getInsuredRisks()) {
-                    if (null == singleInsuredRiskCosts.get(risk)) {
-                        singleInsuredRiskCosts.put(risk, insuranceSubObject.getInsuredCost());
-                    } else {
-                        BigDecimal insuredCost = singleInsuredRiskCosts.get(risk);
-                        insuredCost = insuredCost.add(insuranceSubObject.getInsuredCost());
-
-                        singleInsuredRiskCosts.replace(risk, insuredCost);
-                    }
-                }
-            }
-        }
-
-        return singleInsuredRiskCosts;
     }
 
     private void coefficientMapperStrategyPicker(Risks risk) {
@@ -70,7 +78,7 @@ public class PremiumCalculator {
         }
     }
 
-    private BigDecimal roundThreePrecision(BigDecimal value) {
+    private BigDecimal scaleToTwoValues(BigDecimal value) {
         return value.setScale(2, RoundingMode.HALF_UP);
     }
 }
