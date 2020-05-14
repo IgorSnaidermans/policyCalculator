@@ -17,10 +17,18 @@ public class PremiumCalculator {
 
         BigDecimal insuredCost = subObject.getInsuredCost();
         Risks risk = subObject.getInsuredRisks().get(0);
-        MathContext roundPrecision = new MathContext(2);
 
+        return roundTwoPrecision(insuredCost.multiply(premiumCoefficientMapper(risk)));
+    }
+
+    private BigDecimal roundTwoPrecision(BigDecimal value) {
+        MathContext roundPrecision = new MathContext(2);
+        return value.round(roundPrecision);
+    }
+
+    private BigDecimal premiumCoefficientMapper(Risks risk) {
         if (risk.equals(Risks.FIRE)) {
-            return insuredCost.multiply(new BigDecimal("0.014")).round(roundPrecision);
+            return (new BigDecimal("0.014"));
         }
 
         return null;
