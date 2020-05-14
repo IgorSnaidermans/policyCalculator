@@ -1,5 +1,6 @@
 package lv.igors.policyCalculator.premium;
 
+import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import org.springframework.stereotype.Component;
@@ -10,9 +11,9 @@ import java.util.List;
 
 @Component
 public class PremiumCalculator {
-    PremiumCoefficientMapper coefficientMapper;
+    FireCoefficientMapper coefficientMapper;
 
-    public PremiumCalculator(PremiumCoefficientMapper coefficientMapper) {
+    public PremiumCalculator(FireCoefficientMapper coefficientMapper) {
         this.coefficientMapper = coefficientMapper;
     }
 
@@ -31,6 +32,4 @@ public class PremiumCalculator {
         MathContext roundPrecision = new MathContext(3);
         return value.round(roundPrecision);
     }
-
-
 }

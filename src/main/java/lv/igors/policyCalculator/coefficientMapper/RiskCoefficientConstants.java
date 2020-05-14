@@ -1,4 +1,4 @@
-package lv.igors.policyCalculator.premium;
+package lv.igors.policyCalculator.coefficientMapper;
 
 import java.math.BigDecimal;
 
