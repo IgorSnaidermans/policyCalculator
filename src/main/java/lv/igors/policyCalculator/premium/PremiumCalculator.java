@@ -1,6 +1,8 @@
 package lv.igors.policyCalculator.premium;
 
+import lv.igors.policyCalculator.coefficientMapper.CoefficientMapperStrategy;
 import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
+import lv.igors.policyCalculator.coefficientMapper.TheftCoefficientMapper;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import org.springframework.stereotype.Component;
@@ -11,7 +13,8 @@ import java.util.List;
 
 @Component
 public class PremiumCalculator {
-    FireCoefficientMapper coefficientMapper;
+    CoefficientMapperStrategy coefficientMapper;
+
 
     public PremiumCalculator(FireCoefficientMapper coefficientMapper) {
         this.coefficientMapper = coefficientMapper;
@@ -25,10 +28,18 @@ public class PremiumCalculator {
         BigDecimal insuredCost = subObject.getInsuredCost();
         Risks risk = subObject.getInsuredRisks().get(0);
 
-        return roundTwoPrecision(insuredCost.multiply(coefficientMapper.map(risk, insuredCost)));
+
+        if (risk.equals(Risks.FIRE)) {
+            coefficientMapper = new FireCoefficientMapper();
+        } else if (risk.equals(Risks.THEFT)) {
+            coefficientMapper = new TheftCoefficientMapper();
+        }
+
+
+        return roundThreePrecision(insuredCost.multiply(coefficientMapper.map(risk, insuredCost)));
     }
 
-    private BigDecimal roundTwoPrecision(BigDecimal value) {
+    private BigDecimal roundThreePrecision(BigDecimal value) {
         MathContext roundPrecision = new MathContext(3);
         return value.round(roundPrecision);
     }

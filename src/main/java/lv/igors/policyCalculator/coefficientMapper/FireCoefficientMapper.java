@@ -1,5 +1,7 @@
 package lv.igors.policyCalculator.coefficientMapper;
 
+import lv.igors.policyCalculator.coefficientMapper.constants.InsuredCostBoundaryConstants;
+import lv.igors.policyCalculator.coefficientMapper.constants.RiskCoefficientConstants;
 import lv.igors.policyCalculator.premium.Risks;
 import org.springframework.stereotype.Component;
 
