@@ -7,19 +7,23 @@ import java.util.Objects;
 public class InsurancePolicy {
     String number;
     PolicyStatus policyStatus;
-    List<InsuranceObject> insuranceObject = new ArrayList<>();
+    List<InsuranceObject> insuranceObjectList = new ArrayList<>();
 
     private InsurancePolicy(Builder builder) {
         setNumber(builder.number);
         setPolicyStatus(builder.policyStatus);
     }
 
-    public List<InsuranceObject> getInsuranceObject() {
-        return insuranceObject;
+    public void addInsuranceObject(InsuranceObject object) {
+        insuranceObjectList.add(object);
     }
 
-    public void setInsuranceObject(List<InsuranceObject> insuranceObject) {
-        this.insuranceObject = insuranceObject;
+    public List<InsuranceObject> getInsuranceObjectList() {
+        return insuranceObjectList;
+    }
+
+    public void setInsuranceObjectList(List<InsuranceObject> insuranceObjectList) {
+        this.insuranceObjectList = insuranceObjectList;
     }
 
     public String getNumber() {
@@ -43,7 +47,7 @@ public class InsurancePolicy {
         return "InsurancePolicy{" +
                 "number='" + number + '\'' +
                 ", policyStatus=" + policyStatus +
-                ", insuranceObject=" + insuranceObject +
+                ", insuranceObjectList=" + insuranceObjectList +
                 '}';
     }
 
@@ -54,13 +58,14 @@ public class InsurancePolicy {
         InsurancePolicy that = (InsurancePolicy) o;
         return Objects.equals(number, that.number) &&
                 policyStatus == that.policyStatus &&
-                Objects.equals(insuranceObject, that.insuranceObject);
+                Objects.equals(insuranceObjectList, that.insuranceObjectList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(number, policyStatus, insuranceObject);
+        return Objects.hash(number, policyStatus, insuranceObjectList);
     }
+
 
     public static final class Builder {
         private String number;

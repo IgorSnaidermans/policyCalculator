@@ -17,6 +17,11 @@ public class InsuranceSubObject {
         setInsuredCost(builder.insuredCost);
     }
 
+
+    public void addRisk(Risks risk) {
+        insuredRisks.add(risk);
+    }
+
     public List<Risks> getInsuredRisks() {
         return insuredRisks;
     }
@@ -64,6 +69,7 @@ public class InsuranceSubObject {
                 ", insuredRisks=" + insuredRisks +
                 '}';
     }
+
 
     public static final class Builder {
         private String name;

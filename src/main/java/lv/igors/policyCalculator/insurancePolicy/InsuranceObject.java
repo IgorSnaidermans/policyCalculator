@@ -12,6 +12,14 @@ public class InsuranceObject {
         this.name = name;
     }
 
+    public List<InsuranceSubObject> getInsuranceSubObjects() {
+        return insuranceSubObjects;
+    }
+
+    public void setInsuranceSubObjects(List<InsuranceSubObject> insuranceSubObjects) {
+        this.insuranceSubObjects = insuranceSubObjects;
+    }
+
     public String getName() {
         return name;
     }
