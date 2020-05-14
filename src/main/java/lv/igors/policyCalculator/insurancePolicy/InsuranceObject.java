@@ -8,12 +8,12 @@ public class InsuranceObject {
     String name;
     List<InsuranceSubObject> insuranceSubObjectList = new ArrayList<>();
 
-    public void addInsuranceSubObject(InsuranceSubObject insuranceSubObject) {
-        insuranceSubObjectList.add(insuranceSubObject);
-    }
-
     public InsuranceObject(String name) {
         this.name = name;
+    }
+
+    public void addInsuranceSubObject(InsuranceSubObject insuranceSubObject) {
+        insuranceSubObjectList.add(insuranceSubObject);
     }
 
     public List<InsuranceSubObject> getInsuranceSubObjectList() {

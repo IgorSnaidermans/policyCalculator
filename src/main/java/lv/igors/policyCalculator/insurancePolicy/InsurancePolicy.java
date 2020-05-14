@@ -9,6 +9,11 @@ public class InsurancePolicy {
     PolicyStatus policyStatus;
     List<InsuranceObject> insuranceObjectList = new ArrayList<>();
 
+    private InsurancePolicy(Builder builder) {
+        setNumber(builder.number);
+        setPolicyStatus(builder.policyStatus);
+    }
+
     public List<InsuranceSubObject> getAllSubObjects() {
         List<InsuranceSubObject> subObjectList = new ArrayList<>();
 
@@ -18,11 +23,6 @@ public class InsurancePolicy {
         );
 
         return subObjectList;
-    }
-
-    private InsurancePolicy(Builder builder) {
-        setNumber(builder.number);
-        setPolicyStatus(builder.policyStatus);
     }
 
     public void addInsuranceObject(InsuranceObject object) {
