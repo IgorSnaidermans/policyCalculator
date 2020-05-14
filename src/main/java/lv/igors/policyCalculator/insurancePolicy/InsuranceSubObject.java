@@ -1,7 +1,5 @@
 package lv.igors.policyCalculator.insurancePolicy;
 
-import lv.igors.policyCalculator.premium.Risks;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;

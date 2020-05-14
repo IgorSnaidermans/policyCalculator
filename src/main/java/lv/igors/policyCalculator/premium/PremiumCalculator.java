@@ -6,6 +6,7 @@ import lv.igors.policyCalculator.coefficientMapper.TheftCoefficientMapper;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
+import lv.igors.policyCalculator.insurancePolicy.Risks;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

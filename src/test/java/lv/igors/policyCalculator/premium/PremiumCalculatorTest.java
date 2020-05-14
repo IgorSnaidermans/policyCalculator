@@ -3,6 +3,7 @@ package lv.igors.policyCalculator.premium;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
+import lv.igors.policyCalculator.insurancePolicy.Risks;
 import org.junit.Before;
 import org.junit.Test;
 
