@@ -13,7 +13,7 @@ public class FireCoefficientMapper implements CoefficientMapperStrategy {
     @Override
     public BigDecimal map(Risks risk, BigDecimal insuredCost) {
         if (risk.equals(Risks.FIRE) &&
-                insuredCost.compareTo(InsuredCostBoundaryConstants.FIRE.getValue()) < 0) {
+                insuredCost.compareTo(InsuredCostBoundaryConstants.FIRE.getValue()) <= 0) {
             return RiskCoefficientConstants.FIRE_COST_MORE_THAN_BOUND.getValue();
         } else if (risk.equals(Risks.FIRE) &&
                 insuredCost.compareTo(InsuredCostBoundaryConstants.FIRE.getValue()) > 0) {
