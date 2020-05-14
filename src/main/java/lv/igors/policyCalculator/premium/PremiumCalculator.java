@@ -3,35 +3,65 @@ package lv.igors.policyCalculator.premium;
 import lv.igors.policyCalculator.coefficientMapper.CoefficientMapperStrategy;
 import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
 import lv.igors.policyCalculator.coefficientMapper.TheftCoefficientMapper;
+import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PremiumCalculator {
     CoefficientMapperStrategy coefficientMapper;
 
     public BigDecimal calculate(InsurancePolicy policy) {
-        List<InsuranceSubObject> insuranceSubObjectList =
-                policy.getInsuranceObjectList().get(0).getInsuranceSubObjectList();
-        InsuranceSubObject subObject = insuranceSubObjectList.get(0);
+        List<InsuranceObject> insuranceSubObjectList =
+                policy.getInsuranceObjectList();
+        BigDecimal finalPremium = new BigDecimal("0");
 
-        BigDecimal insuredCost = subObject.getInsuredCost();
-        Risks risk = subObject.getInsuredRisks().get(0);
-
-        strategyChooser(risk);
-        BigDecimal premiumCoefficient = coefficientMapper.map(risk, insuredCost);
-
-        BigDecimal finalPremium = insuredCost.multiply(premiumCoefficient);
-
+        finalPremium = appendEveryRiskPremium(insuranceSubObjectList, finalPremium);
         return roundThreePrecision(finalPremium);
     }
 
-    private void strategyChooser(Risks risk) {
+    private BigDecimal appendEveryRiskPremium(List<InsuranceObject> insuranceSubObjectList, BigDecimal finalPremium) {
+        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = calculateRiskInsuredCost(insuranceSubObjectList);
+
+        for (Map.Entry<Risks, BigDecimal> riskCost : singleInsuredRiskCosts.entrySet()) {
+            coefficientMapperStrategyPicker(riskCost.getKey());
+            BigDecimal coefficient = coefficientMapper.map(riskCost.getValue());
+            BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
+            finalPremium = finalPremium.add(riskPremium);
+        }
+
+        return finalPremium;
+    }
+
+    private HashMap<Risks, BigDecimal> calculateRiskInsuredCost(List<InsuranceObject> insuranceSubObjectList) {
+        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = new HashMap<>();
+
+        for (InsuranceObject insuranceObject : insuranceSubObjectList) {
+            for (InsuranceSubObject insuranceSubObject : insuranceObject.getInsuranceSubObjectList()) {
+                for (Risks risk : insuranceSubObject.getInsuredRisks()) {
+                    if (null == singleInsuredRiskCosts.get(risk)) {
+                        singleInsuredRiskCosts.put(risk, insuranceSubObject.getInsuredCost());
+                    } else {
+                        BigDecimal insuredCost = singleInsuredRiskCosts.get(risk);
+                        insuredCost = insuredCost.add(insuranceSubObject.getInsuredCost());
+
+                        singleInsuredRiskCosts.replace(risk, insuredCost);
+                    }
+                }
+            }
+        }
+
+        return singleInsuredRiskCosts;
+    }
+
+    private void coefficientMapperStrategyPicker(Risks risk) {
         if (risk.equals(Risks.FIRE)) {
             coefficientMapper = new FireCoefficientMapper();
         } else if (risk.equals(Risks.THEFT)) {
@@ -40,7 +70,6 @@ public class PremiumCalculator {
     }
 
     private BigDecimal roundThreePrecision(BigDecimal value) {
-        MathContext roundPrecision = new MathContext(3);
-        return value.round(roundPrecision);
+        return value.setScale(2, RoundingMode.HALF_UP);
     }
 }
