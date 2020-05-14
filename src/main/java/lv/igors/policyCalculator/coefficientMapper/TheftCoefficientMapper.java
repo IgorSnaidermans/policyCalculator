@@ -9,12 +9,8 @@ public class TheftCoefficientMapper implements CoefficientMapperStrategy {
 
     @Override
     public BigDecimal map(BigDecimal insuredCost) {
-        if (insuredCost.compareTo(InsuredCostBoundaryConstants.THEFT.getValue()) >= 0) {
-            return RiskCoefficientConstants.THEFT_COST_EQUAL_MORE_THAN_BOUND.getValue();
-        } else if (insuredCost.compareTo(InsuredCostBoundaryConstants.THEFT.getValue()) < 0) {
-            return RiskCoefficientConstants.THEFT_COST_LESS_THAN_BOUND.getValue();
-        }
-
-        return null;
+        return (insuredCost.compareTo(InsuredCostBoundaryConstants.THEFT.getValue()) >= 0) ?
+                RiskCoefficientConstants.THEFT_COST_EQUAL_MORE_THAN_BOUND.getValue() :
+                RiskCoefficientConstants.THEFT_COST_LESS_THAN_BOUND.getValue();
     }
 }
