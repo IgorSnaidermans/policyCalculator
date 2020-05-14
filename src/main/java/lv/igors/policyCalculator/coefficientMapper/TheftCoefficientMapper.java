@@ -2,9 +2,11 @@ package lv.igors.policyCalculator.coefficientMapper;
 
 import lv.igors.policyCalculator.coefficientMapper.constants.InsuredCostBoundaryConstants;
 import lv.igors.policyCalculator.coefficientMapper.constants.RiskCoefficientConstants;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+@Component
 public class TheftCoefficientMapper implements CoefficientMapperStrategy {
 
     @Override
