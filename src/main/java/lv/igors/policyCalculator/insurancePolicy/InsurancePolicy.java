@@ -9,6 +9,17 @@ public class InsurancePolicy {
     PolicyStatus policyStatus;
     List<InsuranceObject> insuranceObjectList = new ArrayList<>();
 
+    public List<InsuranceSubObject> getAllSubObjects() {
+        List<InsuranceSubObject> subObjectList = new ArrayList<>();
+
+        insuranceObjectList.forEach(object ->
+                subObjectList.addAll(object.getInsuranceSubObjectList()
+                )
+        );
+
+        return subObjectList;
+    }
+
     private InsurancePolicy(Builder builder) {
         setNumber(builder.number);
         setPolicyStatus(builder.policyStatus);
