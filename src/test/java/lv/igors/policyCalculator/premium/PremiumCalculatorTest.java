@@ -15,6 +15,7 @@ public class PremiumCalculatorTest {
     InsurancePolicy policy;
     InsuranceObject insuranceObject;
     InsuranceSubObject insuranceSubObject;
+    PremiumCoefficientMapper coefficientMapper = new PremiumCoefficientMapper();
 
     @Before
     public void setup() {
@@ -27,7 +28,7 @@ public class PremiumCalculatorTest {
         insuranceSubObject.addRisk(Risks.FIRE);
 
         policy.addInsuranceObject(insuranceObject);
-        premiumCalculator = new PremiumCalculator();
+        premiumCalculator = new PremiumCalculator(coefficientMapper);
     }
 
     @Test

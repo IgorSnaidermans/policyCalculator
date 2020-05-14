@@ -10,6 +10,12 @@ import java.util.List;
 
 @Component
 public class PremiumCalculator {
+    PremiumCoefficientMapper coefficientMapper;
+
+    public PremiumCalculator(PremiumCoefficientMapper coefficientMapper) {
+        this.coefficientMapper = coefficientMapper;
+    }
+
     public BigDecimal calculate(InsurancePolicy policy) {
         List<InsuranceSubObject> insuranceSubObjectList =
                 policy.getInsuranceObjectList().get(0).getInsuranceSubObjectList();
@@ -18,7 +24,7 @@ public class PremiumCalculator {
         BigDecimal insuredCost = subObject.getInsuredCost();
         Risks risk = subObject.getInsuredRisks().get(0);
 
-        return roundTwoPrecision(insuredCost.multiply(premiumCoefficientMapper(risk, insuredCost)));
+        return roundTwoPrecision(insuredCost.multiply(coefficientMapper.map(risk, insuredCost)));
     }
 
     private BigDecimal roundTwoPrecision(BigDecimal value) {
@@ -26,17 +32,5 @@ public class PremiumCalculator {
         return value.round(roundPrecision);
     }
 
-    private BigDecimal premiumCoefficientMapper(Risks risk, BigDecimal insuredCost) {
-        BigDecimal HUNDRED = new BigDecimal("100");
-        BigDecimal LESS_THAN_100 = new BigDecimal("0.014");
-        BigDecimal MORE_THAN_100 = new BigDecimal("0.024");
 
-        if (risk.equals(Risks.FIRE) && insuredCost.compareTo(HUNDRED) < 0) {
-            return LESS_THAN_100;
-        } else if (risk.equals(Risks.FIRE) && insuredCost.compareTo(HUNDRED) > 0) {
-            return MORE_THAN_100;
-        }
-
-        return null;
-    }
 }
