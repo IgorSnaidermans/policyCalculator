@@ -6,18 +6,22 @@ import java.util.Objects;
 
 public class InsuranceObject {
     String name;
-    List<InsuranceSubObject> insuranceSubObjects = new ArrayList<>();
+    List<InsuranceSubObject> insuranceSubObjectList = new ArrayList<>();
+
+    public void addInsuranceSubObject(InsuranceSubObject insuranceSubObject) {
+        insuranceSubObjectList.add(insuranceSubObject);
+    }
 
     public InsuranceObject(String name) {
         this.name = name;
     }
 
-    public List<InsuranceSubObject> getInsuranceSubObjects() {
-        return insuranceSubObjects;
+    public List<InsuranceSubObject> getInsuranceSubObjectList() {
+        return insuranceSubObjectList;
     }
 
-    public void setInsuranceSubObjects(List<InsuranceSubObject> insuranceSubObjects) {
-        this.insuranceSubObjects = insuranceSubObjects;
+    public void setInsuranceSubObjectList(List<InsuranceSubObject> insuranceSubObjectList) {
+        this.insuranceSubObjectList = insuranceSubObjectList;
     }
 
     public String getName() {
@@ -32,7 +36,7 @@ public class InsuranceObject {
     public String toString() {
         return "InsuranceObjectsList{" +
                 "name='" + name + '\'' +
-                ", insuranceObjects=" + insuranceSubObjects +
+                ", insuranceObjectList=" + insuranceSubObjectList +
                 '}';
     }
 
@@ -42,11 +46,11 @@ public class InsuranceObject {
         if (o == null || getClass() != o.getClass()) return false;
         InsuranceObject that = (InsuranceObject) o;
         return Objects.equals(name, that.name) &&
-                Objects.equals(insuranceSubObjects, that.insuranceSubObjects);
+                Objects.equals(insuranceSubObjectList, that.insuranceSubObjectList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, insuranceSubObjects);
+        return Objects.hash(name, insuranceSubObjectList);
     }
 }
