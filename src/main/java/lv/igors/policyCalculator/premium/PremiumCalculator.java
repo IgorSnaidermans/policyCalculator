@@ -15,11 +15,6 @@ import java.util.List;
 public class PremiumCalculator {
     CoefficientMapperStrategy coefficientMapper;
 
-
-    public PremiumCalculator(FireCoefficientMapper coefficientMapper) {
-        this.coefficientMapper = coefficientMapper;
-    }
-
     public BigDecimal calculate(InsurancePolicy policy) {
         List<InsuranceSubObject> insuranceSubObjectList =
                 policy.getInsuranceObjectList().get(0).getInsuranceSubObjectList();
@@ -28,15 +23,20 @@ public class PremiumCalculator {
         BigDecimal insuredCost = subObject.getInsuredCost();
         Risks risk = subObject.getInsuredRisks().get(0);
 
+        strategyChooser(risk);
+        BigDecimal premiumCoefficient = coefficientMapper.map(risk, insuredCost);
 
+        BigDecimal finalPremium = insuredCost.multiply(premiumCoefficient);
+
+        return roundThreePrecision(finalPremium);
+    }
+
+    private void strategyChooser(Risks risk) {
         if (risk.equals(Risks.FIRE)) {
             coefficientMapper = new FireCoefficientMapper();
         } else if (risk.equals(Risks.THEFT)) {
             coefficientMapper = new TheftCoefficientMapper();
         }
-
-
-        return roundThreePrecision(insuredCost.multiply(coefficientMapper.map(risk, insuredCost)));
     }
 
     private BigDecimal roundThreePrecision(BigDecimal value) {

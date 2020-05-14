@@ -1,6 +1,5 @@
 package lv.igors.policyCalculator.premium;
 
-import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
@@ -16,7 +15,6 @@ public class PremiumCalculatorTest {
     InsurancePolicy policy;
     InsuranceObject insuranceObject;
     InsuranceSubObject insuranceSubObject;
-    FireCoefficientMapper coefficientMapper = new FireCoefficientMapper();
 
     @Before
     public void setup() {
@@ -28,7 +26,7 @@ public class PremiumCalculatorTest {
         insuranceObject.addInsuranceSubObject(insuranceSubObject);
 
         policy.addInsuranceObject(insuranceObject);
-        premiumCalculator = new PremiumCalculator(coefficientMapper);
+        premiumCalculator = new PremiumCalculator();
     }
 
     @Test
