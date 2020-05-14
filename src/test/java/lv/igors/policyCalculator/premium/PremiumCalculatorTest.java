@@ -21,7 +21,6 @@ public class PremiumCalculatorTest {
         policy = new InsurancePolicy.Builder().build();
         insuranceObject = new InsuranceObject("Object");
         insuranceSubObject = new InsuranceSubObject.Builder()
-                .insuredCost(new BigDecimal("50"))
                 .name("Object")
                 .build();
         insuranceObject.addInsuranceSubObject(insuranceSubObject);
@@ -32,10 +31,24 @@ public class PremiumCalculatorTest {
     }
 
     @Test
-    public void calculate_PolicyWithOneObjectRiskFireCost50_ShouldReturnExpectedAmount() {
-        BigDecimal expectedAmount = new BigDecimal("0.70");
+    public void calculate_PolicyWithOneObjectRiskFireCost99_ShouldReturnExpectedAmount() {
+        insuranceSubObject.setInsuredCost(new BigDecimal("99"));
+
+        BigDecimal expectedAmount = new BigDecimal("1.39");
         BigDecimal result = premiumCalculator.calculate(policy);
 
         assertEquals(expectedAmount, result);
     }
+
+    @Test
+    public void calculate_PolicyWithOneObjectRiskFireCost101_ShouldReturnExpectedAmount() {
+        insuranceSubObject.setInsuredCost(new BigDecimal("101"));
+
+        BigDecimal expectedAmount = new BigDecimal("2.42");
+        BigDecimal result = premiumCalculator.calculate(policy);
+
+        assertEquals(expectedAmount, result);
+    }
+
+
 }
