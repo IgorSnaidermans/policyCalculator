@@ -8,7 +8,7 @@ public enum RiskCoefficientConstants {
     THEFT_COST_EQUAL_MORE_THAN_BOUND(new BigDecimal("0.05")),
     THEFT_COST_LESS_THAN_BOUND(new BigDecimal("0.11"));
 
-    private BigDecimal value;
+    private final BigDecimal value;
 
     RiskCoefficientConstants(BigDecimal value) {
         this.value = value;
