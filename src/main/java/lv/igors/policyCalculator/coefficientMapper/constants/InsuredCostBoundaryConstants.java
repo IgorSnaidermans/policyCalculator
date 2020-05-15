@@ -7,7 +7,7 @@ public enum InsuredCostBoundaryConstants {
     THEFT(new BigDecimal("15"));
 
 
-    private BigDecimal value;
+    private final BigDecimal value;
 
     InsuredCostBoundaryConstants(BigDecimal value) {
         this.value = value;
