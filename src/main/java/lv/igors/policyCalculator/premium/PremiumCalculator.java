@@ -19,19 +19,19 @@ public class PremiumCalculator {
     public BigDecimal calculate(InsurancePolicy policy) {
         List<InsuranceSubObject> insuranceSubObjectList =
                 policy.getAllSubObjects();
-        BigDecimal finalPremium = new BigDecimal("0");
-
-        finalPremium = appendAllRiskPremium(insuranceSubObjectList, finalPremium);
-
+        BigDecimal finalPremium =
+                calculateFinalPremium(sumAllRiskInsuredCost(insuranceSubObjectList));
         return roundTo2Digits(finalPremium);
     }
 
-    private BigDecimal appendAllRiskPremium(List<InsuranceSubObject> insuranceSubObjectList,
-                                            BigDecimal finalPremium) {
-        Map<Risks, BigDecimal> allRiskInsuredCost = sumAllRiskInsuredCost(insuranceSubObjectList);
-
-        finalPremium = appendCalculatedPremium(finalPremium, allRiskInsuredCost);
-
+    private BigDecimal calculateFinalPremium(Map<Risks, BigDecimal> allRiskInsuredCost) {
+        BigDecimal finalPremium = new BigDecimal("0");
+        for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
+            CoefficientMapperStrategy mapper = coefficientMapperStrategyPicker(riskCost.getKey());
+            BigDecimal coefficient = mapper.map(riskCost.getValue());
+            BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
+            finalPremium = finalPremium.add(riskPremium);
+        }
         return finalPremium;
     }
 
@@ -48,6 +48,7 @@ public class PremiumCalculator {
         return singleInsuredRiskCosts;
     }
 
+
     private void appendRiskCost(Map<Risks, BigDecimal> singleInsuredRiskCosts,
                                 BigDecimal subObjectCost, Risks risk) {
         if (!singleInsuredRiskCosts.containsKey(risk)) {
@@ -58,18 +59,6 @@ public class PremiumCalculator {
 
             singleInsuredRiskCosts.replace(risk, insuredCost);
         }
-    }
-
-    private BigDecimal appendCalculatedPremium(BigDecimal finalPremium,
-                                               Map<Risks, BigDecimal> allRiskInsuredCost) {
-        for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
-            CoefficientMapperStrategy coefficientMapper = coefficientMapperStrategyPicker(riskCost.getKey());
-            coefficientMapperStrategyPicker(riskCost.getKey());
-            BigDecimal coefficient = coefficientMapper.map(riskCost.getValue());
-            BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
-            finalPremium = finalPremium.add(riskPremium);
-        }
-        return finalPremium;
     }
 
     private CoefficientMapperStrategy coefficientMapperStrategyPicker(Risks risk) {
