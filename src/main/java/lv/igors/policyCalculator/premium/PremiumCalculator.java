@@ -25,20 +25,20 @@ public class PremiumCalculator {
 
         finalPremium = appendAllRiskPremium(insuranceSubObjectList, finalPremium);
 
-        return scaleToTwoValues(finalPremium);
+        return roundTo2Digits(finalPremium);
     }
 
     private BigDecimal appendAllRiskPremium(List<InsuranceSubObject> insuranceSubObjectList,
                                             BigDecimal finalPremium) {
-        HashMap<Risks, BigDecimal> allRiskInsuredCost = sumAllRiskInsuredCost(insuranceSubObjectList);
+        Map<Risks, BigDecimal> allRiskInsuredCost = sumAllRiskInsuredCost(insuranceSubObjectList);
 
         finalPremium = appendCalculatedPremium(finalPremium, allRiskInsuredCost);
 
         return finalPremium;
     }
 
-    private HashMap<Risks, BigDecimal> sumAllRiskInsuredCost(List<InsuranceSubObject> insuranceSubObjectList) {
-        HashMap<Risks, BigDecimal> singleInsuredRiskCosts = new HashMap<>();
+    private Map<Risks, BigDecimal> sumAllRiskInsuredCost(List<InsuranceSubObject> insuranceSubObjectList) {
+        Map<Risks, BigDecimal> singleInsuredRiskCosts = new HashMap<>();
 
         insuranceSubObjectList
                 .forEach(subObject -> subObject.getInsuredRisks()
@@ -50,9 +50,9 @@ public class PremiumCalculator {
         return singleInsuredRiskCosts;
     }
 
-    private void appendRiskCost(HashMap<Risks, BigDecimal> singleInsuredRiskCosts,
+    private void appendRiskCost(Map<Risks, BigDecimal> singleInsuredRiskCosts,
                                 BigDecimal subObjectCost, Risks risk) {
-        if (null == singleInsuredRiskCosts.get(risk)) {
+        if (!singleInsuredRiskCosts.containsKey(risk)) {
             singleInsuredRiskCosts.put(risk, subObjectCost);
         } else {
             BigDecimal insuredCost = singleInsuredRiskCosts.get(risk);
@@ -63,7 +63,7 @@ public class PremiumCalculator {
     }
 
     private BigDecimal appendCalculatedPremium(BigDecimal finalPremium,
-                                               HashMap<Risks, BigDecimal> allRiskInsuredCost) {
+                                               Map<Risks, BigDecimal> allRiskInsuredCost) {
         for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
             coefficientMapperStrategyPicker(riskCost.getKey());
             BigDecimal coefficient = coefficientMapper.map(riskCost.getValue());
@@ -81,7 +81,7 @@ public class PremiumCalculator {
         }
     }
 
-    private BigDecimal scaleToTwoValues(BigDecimal value) {
+    private BigDecimal roundTo2Digits(BigDecimal value) {
         return value.setScale(2, RoundingMode.HALF_UP);
     }
 }
