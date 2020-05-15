@@ -16,8 +16,6 @@ import java.util.Map;
 
 @Component
 public class PremiumCalculator {
-    CoefficientMapperStrategy coefficientMapper;
-
     public BigDecimal calculate(InsurancePolicy policy) {
         List<InsuranceSubObject> insuranceSubObjectList =
                 policy.getAllSubObjects();
@@ -65,6 +63,7 @@ public class PremiumCalculator {
     private BigDecimal appendCalculatedPremium(BigDecimal finalPremium,
                                                Map<Risks, BigDecimal> allRiskInsuredCost) {
         for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
+            CoefficientMapperStrategy coefficientMapper = coefficientMapperStrategyPicker(riskCost.getKey());
             coefficientMapperStrategyPicker(riskCost.getKey());
             BigDecimal coefficient = coefficientMapper.map(riskCost.getValue());
             BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
@@ -73,11 +72,13 @@ public class PremiumCalculator {
         return finalPremium;
     }
 
-    private void coefficientMapperStrategyPicker(Risks risk) {
+    private CoefficientMapperStrategy coefficientMapperStrategyPicker(Risks risk) {
         if (risk.equals(Risks.FIRE)) {
-            coefficientMapper = new FireCoefficientMapper();
+            return new FireCoefficientMapper();
         } else if (risk.equals(Risks.THEFT)) {
-            coefficientMapper = new TheftCoefficientMapper();
+            return new TheftCoefficientMapper();
+        } else {
+            throw new RuntimeException("No mapper found for " + risk);
         }
     }
 
