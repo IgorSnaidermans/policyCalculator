@@ -1,8 +1,7 @@
 package lv.igors.policyCalculator.premium;
 
 import lv.igors.policyCalculator.coefficientMapper.CoefficientMapperStrategy;
-import lv.igors.policyCalculator.coefficientMapper.FireCoefficientMapper;
-import lv.igors.policyCalculator.coefficientMapper.TheftCoefficientMapper;
+import lv.igors.policyCalculator.coefficientMapper.RiskCoefficientStrategyPicker;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import lv.igors.policyCalculator.insurancePolicy.Risks;
@@ -27,7 +26,7 @@ public class PremiumCalculator {
     private BigDecimal calculateFinalPremium(Map<Risks, BigDecimal> allRiskInsuredCost) {
         BigDecimal finalPremium = new BigDecimal("0");
         for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
-            CoefficientMapperStrategy mapper = coefficientMapperStrategyPicker(riskCost.getKey());
+            CoefficientMapperStrategy mapper = RiskCoefficientStrategyPicker.pick(riskCost.getKey());
             BigDecimal coefficient = mapper.map(riskCost.getValue());
             BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
             finalPremium = finalPremium.add(riskPremium);
@@ -48,7 +47,6 @@ public class PremiumCalculator {
         return singleInsuredRiskCosts;
     }
 
-
     private void appendRiskCost(Map<Risks, BigDecimal> singleInsuredRiskCosts,
                                 BigDecimal subObjectCost, Risks risk) {
         if (!singleInsuredRiskCosts.containsKey(risk)) {
@@ -58,16 +56,6 @@ public class PremiumCalculator {
             insuredCost = insuredCost.add(subObjectCost);
 
             singleInsuredRiskCosts.replace(risk, insuredCost);
-        }
-    }
-
-    private CoefficientMapperStrategy coefficientMapperStrategyPicker(Risks risk) {
-        if (risk.equals(Risks.FIRE)) {
-            return FireCoefficientMapper.getInstance();
-        } else if (risk.equals(Risks.THEFT)) {
-            return TheftCoefficientMapper.getInstance();
-        } else {
-            throw new RuntimeException("No mapper found for " + risk);
         }
     }
 
