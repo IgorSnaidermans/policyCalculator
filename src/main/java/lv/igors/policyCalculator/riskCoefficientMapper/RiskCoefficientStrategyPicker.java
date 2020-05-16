@@ -1,4 +1,4 @@
-package lv.igors.policyCalculator.coefficientMapper;
+package lv.igors.policyCalculator.riskCoefficientMapper;
 
 import lv.igors.policyCalculator.insurancePolicy.Risks;
 

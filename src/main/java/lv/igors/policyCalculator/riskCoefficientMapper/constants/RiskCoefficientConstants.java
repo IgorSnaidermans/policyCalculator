@@ -1,4 +1,4 @@
-package lv.igors.policyCalculator.coefficientMapper.constants;
+package lv.igors.policyCalculator.riskCoefficientMapper.constants;
 
 import java.math.BigDecimal;
 

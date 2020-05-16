@@ -1,7 +1,7 @@
-package lv.igors.policyCalculator.coefficientMapper;
+package lv.igors.policyCalculator.riskCoefficientMapper;
 
-import lv.igors.policyCalculator.coefficientMapper.constants.InsuredCostBoundaryConstants;
-import lv.igors.policyCalculator.coefficientMapper.constants.RiskCoefficientConstants;
+import lv.igors.policyCalculator.riskCoefficientMapper.constants.InsuredCostBoundaryConstants;
+import lv.igors.policyCalculator.riskCoefficientMapper.constants.RiskCoefficientConstants;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

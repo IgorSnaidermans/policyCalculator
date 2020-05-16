@@ -1,10 +1,10 @@
 package lv.igors.policyCalculator.premium;
 
-import lv.igors.policyCalculator.coefficientMapper.CoefficientMapperStrategy;
-import lv.igors.policyCalculator.coefficientMapper.RiskCoefficientStrategyPicker;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import lv.igors.policyCalculator.insurancePolicy.Risks;
+import lv.igors.policyCalculator.riskCoefficientMapper.CoefficientMapperStrategy;
+import lv.igors.policyCalculator.riskCoefficientMapper.RiskCoefficientStrategyPicker;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
