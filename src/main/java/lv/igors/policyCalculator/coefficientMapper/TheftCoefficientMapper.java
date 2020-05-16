@@ -7,7 +7,19 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class TheftCoefficientMapper implements CoefficientMapperStrategy {
+public final class TheftCoefficientMapper implements CoefficientMapperStrategy {
+    private static CoefficientMapperStrategy mapperStrategy;
+
+    private TheftCoefficientMapper() {
+    }
+
+    public static CoefficientMapperStrategy getInstance() {
+        if (mapperStrategy == null) {
+            mapperStrategy = new TheftCoefficientMapper();
+        }
+        return mapperStrategy;
+    }
+
 
     @Override
     public BigDecimal map(BigDecimal insuredCost) {

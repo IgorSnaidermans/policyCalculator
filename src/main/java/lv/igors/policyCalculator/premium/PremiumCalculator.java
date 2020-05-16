@@ -63,9 +63,9 @@ public class PremiumCalculator {
 
     private CoefficientMapperStrategy coefficientMapperStrategyPicker(Risks risk) {
         if (risk.equals(Risks.FIRE)) {
-            return new FireCoefficientMapper();
+            return FireCoefficientMapper.getInstance();
         } else if (risk.equals(Risks.THEFT)) {
-            return new TheftCoefficientMapper();
+            return TheftCoefficientMapper.getInstance();
         } else {
             throw new RuntimeException("No mapper found for " + risk);
         }
