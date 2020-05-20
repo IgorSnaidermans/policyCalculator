@@ -4,15 +4,24 @@ import lv.igors.policyCalculator.insurancePolicy.InsuranceObject;
 import lv.igors.policyCalculator.insurancePolicy.InsurancePolicy;
 import lv.igors.policyCalculator.insurancePolicy.InsuranceSubObject;
 import lv.igors.policyCalculator.insurancePolicy.Risks;
+import lv.igors.policyCalculator.riskCoefficientMapper.CoefficientMapperStrategy;
+import lv.igors.policyCalculator.riskCoefficientMapper.FireCoefficientMapper;
+import lv.igors.policyCalculator.riskCoefficientMapper.RiskCoefficientStrategyPicker;
+import lv.igors.policyCalculator.riskCoefficientMapper.TheftCoefficientMapper;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class PremiumCalculatorTest {
     PremiumCalculator premiumCalculator;
+    RiskCoefficientStrategyPicker strategyPicker;
+    List<CoefficientMapperStrategy> strategyList;
+    TheftCoefficientMapper theftCoefficientMapper;
+    FireCoefficientMapper fireCoefficientMapper;
     InsurancePolicy policy;
     InsuranceObject insuranceObjectOne;
     InsuranceObject insuranceObjectTwo;
@@ -38,9 +47,12 @@ public class PremiumCalculatorTest {
         insuranceSubObjectFour = new InsuranceSubObject.Builder()
                 .name("Object")
                 .build();
-
+        theftCoefficientMapper = new TheftCoefficientMapper();
+        fireCoefficientMapper = new FireCoefficientMapper();
+        strategyList = List.of(theftCoefficientMapper, fireCoefficientMapper);
         policy.addInsuranceObject(insuranceObjectOne);
-        premiumCalculator = new PremiumCalculator();
+        strategyPicker = new RiskCoefficientStrategyPicker(strategyList);
+        premiumCalculator = new PremiumCalculator(strategyPicker);
     }
 
     @Test

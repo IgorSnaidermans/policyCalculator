@@ -1,18 +1,27 @@
 package lv.igors.policyCalculator.riskCoefficientMapper;
 
 import lv.igors.policyCalculator.insurancePolicy.Risks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+
+@Component
 public class RiskCoefficientStrategyPicker {
-    private RiskCoefficientStrategyPicker() {
+    private List<CoefficientMapperStrategy> strategyList;
+
+    @Autowired
+    public RiskCoefficientStrategyPicker(List<CoefficientMapperStrategy> strategies) {
+        this.strategyList = strategies;
     }
 
-    public static CoefficientMapperStrategy pick(Risks risk) {
-        if (risk.equals(Risks.FIRE)) {
-            return FireCoefficientMapper.getInstance();
-        } else if (risk.equals(Risks.THEFT)) {
-            return TheftCoefficientMapper.getInstance();
-        } else {
-            throw new RuntimeException("No mapper found for " + risk);
-        }
+    public CoefficientMapperStrategy pick(Risks risk) {
+        Optional<CoefficientMapperStrategy> optionalStrategy = strategyList.stream()
+                .filter(s -> s.support(risk))
+                .findFirst();
+
+        return optionalStrategy.orElseThrow(()
+                -> new RuntimeException("No coefficient mapper strategy for" + risk));
     }
 }

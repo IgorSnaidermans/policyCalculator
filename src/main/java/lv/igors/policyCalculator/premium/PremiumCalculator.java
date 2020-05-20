@@ -15,6 +15,12 @@ import java.util.Map;
 
 @Component
 public class PremiumCalculator {
+    RiskCoefficientStrategyPicker coefficientStrategyPicker;
+
+    public PremiumCalculator(RiskCoefficientStrategyPicker coefficientStrategyPicker) {
+        this.coefficientStrategyPicker = coefficientStrategyPicker;
+    }
+
     public BigDecimal calculate(InsurancePolicy policy) {
         List<InsuranceSubObject> insuranceSubObjectList =
                 policy.getAllSubObjects();
@@ -25,8 +31,9 @@ public class PremiumCalculator {
 
     private BigDecimal calculateFinalPremium(Map<Risks, BigDecimal> allRiskInsuredCost) {
         BigDecimal finalPremium = new BigDecimal("0");
+
         for (Map.Entry<Risks, BigDecimal> riskCost : allRiskInsuredCost.entrySet()) {
-            CoefficientMapperStrategy mapper = RiskCoefficientStrategyPicker.pick(riskCost.getKey());
+            CoefficientMapperStrategy mapper = coefficientStrategyPicker.pick(riskCost.getKey());
             BigDecimal coefficient = mapper.map(riskCost.getValue());
             BigDecimal riskPremium = riskCost.getValue().multiply(coefficient);
             finalPremium = finalPremium.add(riskPremium);
@@ -49,6 +56,7 @@ public class PremiumCalculator {
 
     private void appendRiskCost(Map<Risks, BigDecimal> singleInsuredRiskCosts,
                                 BigDecimal subObjectCost, Risks risk) {
+
         if (!singleInsuredRiskCosts.containsKey(risk)) {
             singleInsuredRiskCosts.put(risk, subObjectCost);
         } else {
