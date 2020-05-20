@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 public class PremiumCalculator {
-    RiskCoefficientStrategyPicker coefficientStrategyPicker;
+    private RiskCoefficientStrategyPicker coefficientStrategyPicker;
 
     public PremiumCalculator(RiskCoefficientStrategyPicker coefficientStrategyPicker) {
         this.coefficientStrategyPicker = coefficientStrategyPicker;
